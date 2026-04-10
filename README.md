@@ -5,12 +5,15 @@
 Brian M Dulmovits1, Carson Shalaby1, Fangfang Song2, James Garifallou1, Joshua Bertels2, Fanxin Long2,3, Christopher S Thom1,4*
 
 1 Division of Neonatology, Children’s Hospital of Philadelphia, Philadelphia, PA, USA
+
 2 Translational Research Program in Pediatric Orthopedics, Department of Surgery, Children’s Hospital of Philadelphia, Philadelphia, PA, USA
+
 3 Department of Orthopedic Surgery, University of Pennsylvania Perelman School of Medicine, Philadelphia, PA, USA
+
 4 Department of Pediatrics, University of Pennsylvania Perelman School of Medicine, Philadelphia, PA, USA
 
-* Correspondence
-Christopher S Thom
+Correspondence
+Christopher S Thom:
 thomc@chop.edu
 
 # Abstract
