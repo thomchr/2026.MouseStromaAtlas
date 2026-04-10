@@ -1,5 +1,3 @@
-# 2026.MouseStromaAtlas
-
 # A single cell atlas defines perinatal factors that drive murine bone marrow development
 
 Brian M Dulmovits1, Carson Shalaby1, Fangfang Song2, James Garifallou1, Joshua Bertels2, Fanxin Long2,3, Christopher S Thom1,4*
