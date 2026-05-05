@@ -1,6 +1,4 @@
-## Script to generate data and figures
-
-# A single cell atlas defines perinatal factors that drive murine bone marrow development (Dulmovits et al. 2026)
+#A single cell atlas defines perinatal factors that drive murine bone marrow development (Dulmovits et al. 2026)
 
 #load packages
 library(Seurat)
@@ -180,7 +178,7 @@ plot_cells(ACAR.cds, color_cells_by = "pseudotime", label_cell_groups=FALSE, lab
 plot_cells(ACAR.cds, color_cells_by = "pseudotime", cell_size = 0.7, label_cell_groups=FALSE, label_leaves=FALSE, label_branch_points=FALSE, graph_label_size= 0) + scale_colour_gradientn(colours = rev(brewer.pal(n = 9, name = "Spectral"))) &NoAxes()
 
 #Osteo/OCAR lineage analyses
-Osteo/OCAR lineage analyses
+#Osteo/OCAR lineage analyses
 OCARlineage <- subset(x = mesen.stroma, idents = c("OCAR1", "OCAR2", "Ob1", "Ob2", "Oc", "BiPot", "MesenP1", "MesenP2")) 
 OCARlineage[["RNA"]] <- JoinLayers(OCARlineage[["RNA"]]) # need to do this before exporting to single cell experiment for miloR
 DefaultAssay(OCARlineage) <- "RNA"
@@ -435,9 +433,353 @@ DotPlot2(BiPot, features = select.genes, group.by = "age", border = FALSE, color
 DotPlot2(MesenP, features = select.genes, group.by = "age", border = FALSE, color_scheme = "BuRd", show_grid = FALSE, flip = TRUE)
 
 #################4B-G - code for CellChat
+MBM <- mesen.stroma
+
+# First thing we need to do is split the MBM dataset into its 4 time stages of Fetal Birth Neonatal Juvenile/Adult and Aged(Old)
+MBM <- SetIdent(MBM, value = "gt")
+
+#Fetal-birth Neonatal Adult Aged
+
+MBMF <- subset(MBM, idents = c("Fetal-birth"))
+MBMN <- subset(MBM, idents = c("Neonatal"))
+MBMA <- subset(MBM, idents = c("Adult"))
+MBMO <- subset(MBM, idents = c("Aged"))
+
+
+#what you set the ident for these 4 object should be what you intend to run cellchat on. Be it clusters or cell types.
+
+MBMF <- SetIdent(MBMF, value = "fg")
+MBMN <- SetIdent(MBMN, value = "fg")
+MBMA <- SetIdent(MBMA, value = "fg")
+MBMO <- SetIdent(MBMO, value = "fg")
+
+
+cellchat <- createCellChat(object = MBM, group.by = "fg", assay = "RNA")
+cellchat@idents <-droplevels(cellchat@idents)
+#SPECIFY HUMAN OR MOUSE
+CellChatDB <- CellChatDB.mouse
+###########################################################################
+#Most times all annotations is overkill so you can just do some of them.
+#Can also do c() for search to get mutliple types.
+#CellChatDB.use <- subsetDB(CellChatDB, search = "Secreted Signaling", key = "annotation")
+#CellChatDB.use <- subsetDB(CellChatDB, search = c("Secreted Signaling","Cell-Cell Contact"), key = "annotation")
+#If you want it all use the code below instead.
+CellChatDB.use <- CellChatDB
+#########################################################################
+cellchat@DB <- CellChatDB.use
+options(future.globals.maxSize= 5291289600)
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- smoothData(cellchat, adj = PPI.mouse)
+cellchat <- computeCommunProb(cellchat, type = "triMean")
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
+cellchat <- netAnalysis_computeCentrality(cellchat)
+saveRDS(cellchat, "cc_MBM_ALLTIMES_ALL.rds")
+rm(cellchat)
+
+cellchat <- createCellChat(object = MBMF, group.by = "fg", assay = "RNA")
+cellchat@idents <-droplevels(cellchat@idents)
+#SPECIFY HUMAN OR MOUSE
+CellChatDB <- CellChatDB.mouse
+###########################################################################
+#Most times all annotations is overkill so you can just do some of them.
+#Can also do c() for search to get mutliple types.
+#CellChatDB.use <- subsetDB(CellChatDB, search = "Secreted Signaling", key = "annotation")
+#CellChatDB.use <- subsetDB(CellChatDB, search = c("Secreted Signaling","Cell-Cell Contact"), key = "annotation")
+#If you want it all use the code below instead.
+CellChatDB.use <- CellChatDB
+#########################################################################
+cellchat@DB <- CellChatDB.use
+options(future.globals.maxSize= 5291289600)
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- smoothData(cellchat, adj = PPI.mouse)
+cellchat <- computeCommunProb(cellchat, type = "triMean")
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
+cellchat <- netAnalysis_computeCentrality(cellchat)
+saveRDS(cellchat, "cc_MBMF_ALL.rds")
+rm(cellchat)
+
+cellchat <- createCellChat(object = MBMN, group.by = "fg", assay = "RNA")
+cellchat@idents <-droplevels(cellchat@idents)
+#SPECIFY HUMAN OR MOUSE
+CellChatDB <- CellChatDB.mouse
+###########################################################################
+#Most times all annotations is overkill so you can just do some of them.
+#Can also do c() for search to get mutliple types.
+#CellChatDB.use <- subsetDB(CellChatDB, search = "Secreted Signaling", key = "annotation")
+#CellChatDB.use <- subsetDB(CellChatDB, search = c("Secreted Signaling","Cell-Cell Contact"), key = "annotation")
+#If you want it all use the code below instead.
+CellChatDB.use <- CellChatDB
+#########################################################################
+cellchat@DB <- CellChatDB.use
+options(future.globals.maxSize= 5291289600)
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- smoothData(cellchat, adj = PPI.mouse)
+cellchat <- computeCommunProb(cellchat, type = "triMean")
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
+cellchat <- netAnalysis_computeCentrality(cellchat)
+saveRDS(cellchat, "cc_MBMN _ALL.rds")
+rm(cellchat)
+
+cellchat <- createCellChat(object = MBMA, group.by = "fg", assay = "RNA")
+cellchat@idents <-droplevels(cellchat@idents)
+#SPECIFY HUMAN OR MOUSE
+CellChatDB <- CellChatDB.mouse
+###########################################################################
+#Most times all annotations is overkill so you can just do some of them.
+#Can also do c() for search to get mutliple types.
+#CellChatDB.use <- subsetDB(CellChatDB, search = "Secreted Signaling", key = "annotation")
+#CellChatDB.use <- subsetDB(CellChatDB, search = c("Secreted Signaling","Cell-Cell Contact"), key = "annotation")
+#If you want it all use the code below instead.
+CellChatDB.use <- CellChatDB
+#########################################################################
+cellchat@DB <- CellChatDB.use
+options(future.globals.maxSize= 5291289600)
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- smoothData(cellchat, adj = PPI.mouse)
+cellchat <- computeCommunProb(cellchat, type = "triMean")
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
+cellchat <- netAnalysis_computeCentrality(cellchat)
+saveRDS(cellchat, "cc_MBMA_ALL.rds")
+rm(cellchat)
+
+cellchat <- createCellChat(object = MBMO, group.by = "fg", assay = "RNA")
+cellchat@idents <-droplevels(cellchat@idents)
+#SPECIFY HUMAN OR MOUSE
+CellChatDB <- CellChatDB.mouse
+###########################################################################
+#Most times all annotations is overkill so you can just do some of them.
+#Can also do c() for search to get mutliple types.
+#CellChatDB.use <- subsetDB(CellChatDB, search = "Secreted Signaling", key = "annotation")
+#CellChatDB.use <- subsetDB(CellChatDB, search = c("Secreted Signaling","Cell-Cell Contact"), key = "annotation")
+#If you want it all use the code below instead.
+CellChatDB.use <- CellChatDB
+#########################################################################
+cellchat@DB <- CellChatDB.use
+options(future.globals.maxSize= 5291289600)
+cellchat <- subsetData(cellchat)
+cellchat <- identifyOverExpressedGenes(cellchat)
+cellchat <- identifyOverExpressedInteractions(cellchat)
+cellchat <- smoothData(cellchat, adj = PPI.mouse)
+cellchat <- computeCommunProb(cellchat, type = "triMean")
+cellchat <- filterCommunication(cellchat, min.cells = 10)
+cellchat <- computeCommunProbPathway(cellchat)
+cellchat <- aggregateNet(cellchat)
+cellchat <- netAnalysis_computeCentrality(cellchat)
+saveRDS(cellchat, "cc_MBMO_ALL.rds")
+rm(cellchat)
+
+
+# you have now made 5 cellchat objects for each time point. 
+# Now its time to analyse them. Analysis is very customizeable. Below is what is in the paper.
+
+#read in your cellchat objects 
+
+
+
+
+
+#netVisual_bubble(ccMBM, signaling = c("NOTCH", "CXCL", "IGF", "SPP1", "CSF", #"KIT", "ADGRG", "PTN"), targets.use = "HSPC", sources.use = c("MesenP", "BiPot", "ACAR"))
+
+
+ccMBMN <- netAnalysis_computeCentrality(ccMBMN, slot.name = "netP")
+netAnalysis_signalingRole_network(ccMBMN, signaling = pathways.show, width = 10, height = 4, font.size = 10)
+
+ccMBMA <- netAnalysis_computeCentrality(ccMBMA, slot.name = "netP")
+netAnalysis_signalingRole_network(ccMBMA, signaling = pathways.show, width = 10, height = 4, font.size = 10)
+
+
+#Combine the objects 
+object.list <- list(MBMN = ccMBMN, MBMA = ccMBMA)
+cellchatNA <- mergeCellChat(object.list, add.names = names(object.list))
+
+
+netVisual_bubble(cellchatNA, targets.use = c("HSPC"), sources.use = "ACAR", remove.isolate = T  ,comparison = c(1, 2), angle.x = 45, signaling = c("NOTCH", "CXCL", "IGF", "SPP1", "CSF", "KIT", "ADGRG", "PTN", "ICAM", "IL2", "ANGPTL", "ADIPONECTIN"), dot.size.max  = 8, dot.size.min = 8)
+netVisual_bubble(cellchatNA, targets.use = c("HSPC"), sources.use = "MesP", remove.isolate = T  ,comparison = c(1, 2), angle.x = 45, signaling = c("NOTCH", "CXCL", "IGF", "SPP1", "CSF", "KIT", "ADGRG", "PTN"),  dot.size.max  = 8, dot.size.min = 8)
+#netVisual_bubble(cellchatFA, targets.use = c("HSPC"), sources.use = "MesP", remove.isolate = T  ,comparison = c(1, 2), angle.x = 45, signaling = c("NOTCH", "CXCL", "IGF", "SPP1", "CSF", #"KIT", "ADGRG", "PTN"),  dot.size.max  = 8, dot.size.min = 8)
+
+
+pdf(file = "MES->HPSC_FETAL_PATH.pdf", width = 8, height = 8)
+netVisual_chord_gene(ccMBMF, sources.use = c("MesP"), targets.use = c("HSPC"),  lab.cex = 0.5,legend.pos.y = 30, slot.name = "netP")
+dev.off()
+
+pdf(file = "MESBI->HPSC_FETAL_PATH.pdf", width = 8, height = 8)
+netVisual_chord_gene(ccMBMF, sources.use = c("MesP", "BiPot"), targets.use = c("HSPC"),  lab.cex = 0.5, legend.pos.y = 30, slot.name = "netP")
+dev.off()
+
+pdf(file = "ACARBIMES->HPSC_NEONATAL_PATH.pdf", width = 8, height = 8)
+netVisual_chord_gene(ccMBMN, sources.use = c("MesP", "BiPot", "ACAR"), targets.use = c("HSPC"),  lab.cex = 0.5,legend.pos.y = 30, slot.name = "netP")
+dev.off()
+
+pdf(file = "ACARBIMES->HPSC_ADULT_PATH.pdf", width = 8, height = 8)
+netVisual_chord_gene(ccMBMA, sources.use = c("MesP", "BiPot", "ACAR"), targets.use = c("HSPC"),  lab.cex = 0.5,legend.pos.y = 30, slot.name = "netP")
+dev.off()
+
 
 
 ###Fig 5. Transcription factor activity is developmentally controlled in the bone marrow niche.
+
+
+#Seurat conversion to loom 
+#replace with your own libary if needed. If running in R studio then just delete the line. this is more for running on an High Performance Cluster(HPC) 
+R_LIBS_USER = "/mnt/isilon/thom_lab/thomlab_carson/x86_64-pc-linux-gnu-library/4.4"
+library(Seurat)
+library(dplyr)
+library(patchwork)
+library(tidyverse)
+library(SeuratExtend)
+
+#put your seurat object here
+MBM <- readRDS("/mnt/isilon/thom_lab/thomlab_Brian/Mouse BM stroma computational analyses 2023-24/Kara_Added_BMstroma_06102025/mesenstroma_scviFINAL101425.rds")
+
+
+#ONLY UNCOMMENT THIS IF ITS A V5 Seurat Object
+DefaultAssay(MBM) <- "RNA"
+#MBM@assays[["SCT"]] <- NULL
+#MBM <- JoinLayers(MBM)
+
+#MBM[["RNA"]] <- as(object = MBM[["RNA"]], Class = "Assay")
+
+
+MBMDS <-Seu2Loom(
+  MBM,
+  filename = "MBM_07825.loom",
+  add.normdata = FALSE,
+  add.metadata = TRUE,
+  layers = NULL,
+  overwrite = TRUE
+)
+
+##$DO NOT DO THIS NEXT PARAGRAPH OF CODE IN R STUDIO
+
+#RUNNING SCENIC. DO NOT DO THIS IN R STUDIO. It should be done in singularity/ a bash script. Intially copy as is, but replace with your path. 
+#I recomend having everything in one very cluttered directory just due to how singularity bindings work. It is certainly possible, but this is very much as case of 
+#if it aint broke dont fix it. 
+
+
+#!/bin/bash
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=500G
+#SBATCH --time=72:00:00
+#module load singularity/3.11.1
+#singularity run -B /mnt/isilon/thom_lab/thomlab_carson/cellchat/AGM/SCENIC_CS:/SCENIC_CS ./aertslab-pyscenic-0.12.1.sif pyscenic grn --num_workers 20 -o /SCENIC_CS/MBM_07825expr_mat.adjacencies.tsv /SCENIC_CS/MBM_07825.loom /SCENIC_CS/allTFs_mm.txt
+#singularity run -B /mnt/isilon/thom_lab/thomlab_carson/cellchat/AGM/SCENIC_CS:/SCENIC_CS ./aertslab-pyscenic-0.12.1.sif pyscenic ctx /SCENIC_CS/MBM_07825expr_mat.adjacencies.tsv /SCENIC_CS/mm10_500bp_up_100bp_down_full_tx_v10_clust.genes_vs_motifs.rankings.feather /SCENIC_CS/mm10_10kbp_up_10kbp_down_full_tx_v10_clust.genes_vs_motifs.rankings.feather --num_workers 20 --output /SCENIC_CS/MBM_07825regulonsNF.csv --no_pruning --annotations_fname /SCENIC_CS/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl --expression_mtx_fname /SCENIC_CS/MBM_07825.loom --mode "custom_multiprocessing"
+#singularity run -B /mnt/isilon/thom_lab/thomlab_carson/cellchat/AGM/SCENIC_CS:/SCENIC_CS ./aertslab-pyscenic-0.12.1.sif pyscenic aucell /SCENIC_CS/MBM_07825.loom /SCENIC_CS/MBM_07825regulonsNF.csv --num_workers 20 --output /SCENIC_CS/MBM_07825auc_mtxNF.csv
+
+#Just a note, pySCENIC documentation will claim you can save the auc_mtx as a loom file, and at the time of writing of the vinettes this was true, however recent dependency
+#issues make it impossible so we need to employ the slightly less conventional but still valid method of merging the scRNA dataset with the pySCENIC output
+
+
+#Adding SCENIC to the seurat object 
+#Once you have your auc matrix which in this case is MBM_07825auc_mtxNF.csv you can go back to the safety that is R studio and working with Seurat Objects 
+#it is absolulty imperative that your seurat object match the auc matrix in terms of the cells. 
+
+
+#MBM <- readRDS("/mnt/isilon/thom_lab/thomlab_Brian/Mouse BM stroma computational analyses 2023-24/Kara_Added_BMstroma_06102025/mesenstroma_scviFINAL101425.rds")
+aucMBM <- as.sparse(read.csv(file = "/mnt/isilon/thom_lab/thomlab_carson/cellchat/AGM/SCENIC_CS/MBM_07825auc_mtxNF.csv", sep = ",", header = TRUE, row.names = 1))
+aucMBM <-t(aucMBM)
+matMBM <-as.matrix(aucMBM)
+rownames(matMBM) <- gsub("\\(\\+\\)", "", rownames(matMBM))
+rownames(matMBM) <- gsub("\\.\\.\\.", "", rownames(matMBM))
+
+
+#This is going to create 3 assays. The main one of use is the last FTF assay. 
+#TF is just the raw unmodified auc matrix in the form of a V5 assay
+#TFO is the same as TF but a V3/V4 assay
+#FTF is a filtered TF where all values below 0.05 are rendered as zero
+
+
+
+all.equal(colnames(MBM@assays$RNA), colnames(matMBM))
+tfmMBM_assay <- CreateAssay5Object(data = matMBM)
+MBM[["TF"]] <- tfmMBM_assay
+atf <-rownames(MBM[["TF"]])
+DefaultAssay(MBM) <- 'TF'
+
+all.equal(colnames(MBM@assays$RNA), colnames(matMBM))
+tfmMBM_assay <- CreateAssayObject(data = matMBM)
+MBM[["TFO"]] <- tfmMBM_assay
+atf <-rownames(MBM[["TFO"]])
+DefaultAssay(MBM) <- 'TFO'
+
+
+matMBM[matMBM < 0.05] <- 0
+all.equal(colnames(MBM@assays$RNA), colnames(matMBM))
+tfmMBM_assay <- CreateAssay5Object(data = matMBM)
+MBM[["FTF"]] <- tfmMBM_assay
+atf <-rownames(MBM[["FTF"]])
+DefaultAssay(MBM) <- 'FTF'
+
+
+
+#At this point the Seurat Object has potentially 5 assays. RNA SCVI TF TFO and FTF. 
+# you can switch between them by altering the default assay. With the scenic auc matrixes added in, it is possible to view their AUC values the same way as you 
+# would view any other gene found in the RNA or SCVI matrix. 
+# For instance if you wanted a violin plot of EBF1 RNA expression you would switch the default matrix to RNA and make a violin plot. 
+# If you want to view both or just want to skip the hassle of switching default assays you could do something like this 
+# VlnPlot(MBM, c("tf_Ebf1", "rna_Ebf1")) to see both the scenic transcription factor activity and the rna expression. 
+
+
+#VOLCANO PLOTS 
+#the main advantage of haivng the AUC matrix in the seurat object is that you can treat transcription factor activities like any other gene. You can do findmarkers 
+# featureplots dotplots or violinplots. 
+
+library(SeuratExtend)
+
+MBM <- SetIdent(MBM, value = "fg")
+
+#Labels were added manually 
+
+png(file = "MBMF_VOL_NL_MESvACAR.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "ACAR", ident.2 = "MES" , top.n = 0, y = "tscore", x.quantile = 0.9,y.quantile = 0.95, y.threshold = 450, title = "MES vs ACAR" )
+dev.off()
+png(file = "MBMF_VOL_NL_MESvBI.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "BI", ident.2 = "MES" , top.n = 0, y = "tscore", x.quantile = 0.9,y.quantile = 0.95, title = "MES vs BI" )
+dev.off()
+png(file = "MBMF_VOL_NL_BIvACAR.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "ACAR", ident.2 = "BI" ,top.n = 0, y = "tscore", x.quantile = 0.9,y.quantile = 0.95, title = "BI vs ACAR")
+dev.off()
+
+#if needed
+#MBM$ggt <- paste(MBM$fg, MBM$gt, sep "_")
+
+MBM <- SetIdent(MBM, value = "ggt")
+#ggt is fg(final groupings) plus the gt(group time)
+
+png(file = "MBMF_VOLNL_MES_FBvsA.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "MES_A", ident.2 = "MES_FB" , top.n = 0, y = "tscore", x.quantile = 0.95,y.quantile = 0.95, title = "MES_FetalBirth vs MES_Adult" )
+dev.off()
+png(file = "MBMF_VOLNL_ACAR_FBvsA.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "ACAR_A", ident.2 = "ACAR_N" ,  top.n = 0, y = "tscore", x.quantile = 0.95,y.quantile = 0.95,  title = "ACAR_Neonatal vs MES_Adult" )
+dev.off()
+png(file = "MBMF_VOLNL_BI_FBvsA.png", width = 6.6, height = 4.7, units = "in", res = 300)
+VolcanoPlot(MBM, ident.1 = "BI_A", ident.2 = "BI_FB" , top.n = 0, y = "tscore", x.quantile = 0.95,y.quantile = 0.95, title = "BI_FetalBirth vs BI_Adult")
+dev.off()
+
+#png(file = "MBMF_VOLNL_BI_FBvsN.png", width = 6.6, height = 4.7, units = "in", res = 300)
+#VolcanoPlot(MBM, ident.1 = "BI_N", ident.2 = "BI_FB" , top.n = 0, y = "tscore", x.quantile = 0.95,y.quantile = 0.95, title = "BI_FetalBirth vs BI_Neonatal")
+#dev.off()
+
+
+
+
+
+
 
 #################code for SCENIC 
 
