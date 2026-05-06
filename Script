@@ -94,6 +94,8 @@ mesen.stroma$age <- factor(mesen.stroma$age, levels = c("E16.5", "E18.5", "P0", 
 mesen.stroma$dev.grouping <- plyr::mapvalues(x = mesen.stroma$age, from = c("E16.5", "E18.5", "P0", "P4", "P10", "P14", "1M", "1.5M", "2M", "3M", "5M", "5.5M", "16M", "18M"), to = c("Fetal-birth", "Fetal-birth", "Fetal-birth", "Neonatal", "Neonatal", "Neonatal", "Juvenile", "Juvenile", "Adult", "Adult", "Adult", "Adult", "Aged", "Aged"))
 mesen.stroma$dev.grouping <- factor(mesen.stroma$dev.grouping, levels = c("Fetal-birth", "Neonatal", "Juvenile", "Adult", "Aged")) #reordering of dev time points for downstream visualization
 
+
+
 ####################
 ###Fig 2. Integrated single cell atlas defines the ACAR lineage trajectory.
 ####################
@@ -374,6 +376,8 @@ for (i in seq_len(n_lineages)) {
 sessionInfo()
 
 
+
+
 ###################
 ###Fig 3. ACAR differentiation is blocked in fetal life.
 ###################
@@ -552,6 +556,9 @@ NeovAd_abundresults$scvi.clusters <- ifelse(NeovAd_abundresults$scvi.clusters_fr
 cluster_order <- c("Chdro5", "Chdro4", "Chdro3", "Chdro2", "Chdro1", "MesenP1", "Mixed", "MesenP2", "BiPot", "Oc", "Ob2", "Ob1", "OCAR", "ACAR3", "ACAR2", "ACAR1") #coerces the desired order on beeswarm plot
 NeovAd_abundresults$scvi.clusters <- factor(NeovAd_abundresults$scvi.clusters, levels=cluster_order)
 plotDAbeeswarm(NeovAd_abundresults, group.by = "scvi.clusters") + scale_color_gradient2(high = scales::muted("Red"), mid = "Grey", low = scales::muted("Dodger blue"), midpoint = 0, name = "logFC") + theme(axis.text.x = element_text(color = "black"), axis.text.y = element_text(color = "black")) + theme(panel.grid.major = element_line(color = "lightgrey"), panel.grid.minor = element_line(color = "lightgrey"))
+
+
+
 
 #######################
 ###Fig 4. Hematopoiesis supporting secretome emerges in the postnatal bone marrow. 
@@ -813,6 +820,9 @@ netVisual_chord_gene(ccMBMA, sources.use = c("MesP", "BiPot", "ACAR"), targets.u
 dev.off()
 
 
+
+
+
 #####################
 ###Fig 5. Transcription factor activity is developmentally controlled in the bone marrow niche.
 #####################
@@ -997,7 +1007,13 @@ CAR_TF2 <- c("Epas1", "Hif1a", "Nfkb1", "Cebpa", "Pparg", "Runx1", "Runx2")
 ACARsubbed2.cds <- ACAR.cds[rowData(ACAR.cds)$gene_short_name %in% CAR_TF2, colData(ACAR.cds)$scvi.clusters %in% c("MesenP1", "MesenP2", "BiPot", "ACAR1", "ACAR2", "ACAR3")]
 plot_genes_in_pseudotime(ACARsubbed2.cds, color_cells_by= "dev.grouping", min_expr=0.5)
 
+
+
+
+
+#######################
 ###Fig 6. Transcriptional programs related to the fetal-to-postnatal transcription drive hematopoietic niche development postnatally. 
+#######################
 mesen.stroma$celltype.age <- paste(mesen.stroma$scvi.clusters, mesen.stroma$age, sep = "_") #will create new metadata slot that names cells as "cluster_age"
 mesen.stroma <- SetIdent(mesen.stroma, value = "celltype.age") #sets idents to cell type.age 
 mesen.stroma[["RNA"]] <- JoinLayers(mesen.stroma[["RNA"]]) # need to do this before exporting to single cell experiment 
