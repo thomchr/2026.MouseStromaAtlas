@@ -611,10 +611,18 @@ DotPlot2(BiPot, features = osteokine_4, group.by = "age", border = FALSE, color_
 
 #focusing analyses on genes that are significantly elevated in ACAR cells at different time points
 #genes that are high in each dev time point in ACAR
+#huge plots
 FB_secretome <- c("Acan", "Adamts2", "Adamtsl1",  "Alpl", "Bmp1", "C1qtnf3", "Col11a1", "Col11a2", "Col12a1", "Col3a1", "Col5a1", "Col5a2", "Comp", "Cpe", "Cryab", "Cthrc1", "Des", "Dkk1", "Dlk1", "Dpt", "Edil3", "Eif4ebp2", "Eif4h", "Entpd3", "Epyc", "Fam20c", "Fap", "Fbln7", "Fgf2", "Fstl1", "Galnt1", "Gas2", "Glb1", "Glg1", "Gnas", "Hapln1", "Igdcc4", "Igf2", "Il17b", "Inhba", "Isl1", "Itih2", "Ivd", "Lgals1", "Loxl3", "Lum", "Ltbp3", "Macrod1", "Matn3", "Mb", "Mfap4", "Mfap5", "Mia", "Mthfs", "Mustn1", "Nrg1", "Ntn1", "Omd", "P3h1", "P3h3", "Plod1", "Postn", "Ppp1r8", "Prrx1", "Ptn", "Robo1", "Rspo3", "Scarf2", "Sec23a", "Sema3a", "Sfrp5", "Slit3", "Spock2", "Tgfbi", "Thbs2", "Thbs3", "Tk1", "Tnni2", "Tnnt2", "Tpd52l1", "Ucma", "Vcan", "Vegfa", "Vegfc", "Wif1", "Wwp2")
 Neo_secretome <- c("Acyp2", "Adipoq", "Agt", "Aif1l", "Aldh1a2", "Bglap", "Bglap2", "C1qtnf9", "Calca", "Calcb", "Casq1", "Ccdc80", "Cfh", "Cirbp", "Ctsh", "Cxcl12", "Ddah2", "Dmp1", "Fmod", "Gclm", "Gpc6", "Gpx7", "Hpgd", "Hpx", "Hspbp1", "Igf1", "Jdp2", "Kazald1", "Kctd12", "Kitl", "Lgals3", "Lgmn", "Lrp4", "Luc7l", "Mmp13", "Mmrn2", "Mstn", "Ngf", "Ntf3", "Olfml2b", "Oscar", "Otor", "Plod2", "Pnpt1", "Ppic", "Prg4", "Prr15", "Rbm3", "Ret", "Scara3", "Sdcbp", "Sema3d", "Sfn", "Siglec1", "Sost", "Sparc", "Spon2", "Srl", "Stmn4", "Tcn2", "Tg", "Tnc", "Tnfrsf19", "Tnfsf11", "Vcam1")
 Postnatal_secretome <- c("Ak1", "Amy1", "Angpt4", "Angptl1", "B3gnt2", "Bgn", "Ccl2", "Chst5", "Clec11a", "Col8a1", "Cst3", "Ctsa", "Cxcl14", "Dpp7", "Dpysl3", "Eef1d", "Efemp2", "Enpp2", "Fbln5", "Fkbp10", "Fkbp7", "Gdf15", "Grem1", "H2-Q10", "H6pd", "Ibsp", "Ier2", "Il10", "Metrnl", "Mgp", "Mill2", "Mlf1", "Nmb", "Nog", "Olfml3", "Pcolce", "Pf4", "Pmvk", "Prtn3", "Rarres2", "Rcn3", "Serpina12", "Serpine1", "Serpine2", "Serpinf1", "Serping1", "Serpinh1", "Spon1", "Spp1", "Tmsb10", "Vasn")
 Aged_secretome <- c("Adam23", "Clic5", "Cntfr", "Dcn", "Ear2", "Fgf1", "Itih2", "Smoc2", "Spon1", "Vtn")
+
+#more limited plots [[ to highlight some genes for Supp Fig 7 ]]
+FB_secretome_consolidated <- c("Acan", "Col11a1", "Comp", "Dlk1", "Epyc","Galnt1", "Igdcc4", "Ivd", "Matn3", "Mustn1","Plod1", "Rspo3", "Spock2", "Tnni2", "Vegfc")
+Neo_secretome <- c("Adipoq", "Bglap2", "Calcb", "Cxcl12", "Fmod", "Igf1", "Kitl", "Mmp13", "Ngf", "Olfml2b", "Prg4", "Sema3d", "Sost", "Tnfsf11", "Vcam1")
+Postnatal_secretome <- c("Ak1", "Angptl1", "Bgn", "Clec11a", "Cst3", "Cxcl14", "Efemp2", "Fkbp10", "Grem1", "Ibsp", "Metrnl", "Nog", "Pf4", "Serpine2", "Spp1")
+Aged_secretome <- c("Adam23", "Clic5", "Cntfr", "Dcn", "Ear2", "Fgf1", "Itih2", "Smoc2", "Spon1", "Vtn")
+
 
 select.genes <- c("Bmp1", "Col3a1", "Dlk1", "Igf2", "Postn", "Ptn", "Adipoq", "Csf1", "Cxcl12", "Igf1", "Il7", "Kitl", "Ngf", "Vcam1", "Angptl1", "Cxcl14", "Fbln5", "Il34", "Serpine2", "Serping1", "Spp1", "Dcn", "Fgf1", "Smoc2") #select genes from each developmental timepoint
 DotPlot2(ACAR, features = select.genes, group.by = "age", border = FALSE, color_scheme = "BuRd", show_grid = FALSE, flip = TRUE)
